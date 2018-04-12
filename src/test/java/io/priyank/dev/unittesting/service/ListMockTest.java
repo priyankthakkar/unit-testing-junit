@@ -12,6 +12,7 @@ import static org.mockito.Mockito.atMost;
 
 import java.util.List;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 public class ListMockTest {
 
@@ -93,5 +94,22 @@ public class ListMockTest {
 
         // 5. verifies method get() was on list for maximum of two times
         verify(mockedList, atMost(2)).get(anyInt());
+    }
+
+    // Well, if a mocked method is being called in our test
+    // and if we decided to verify what set of parameters are being passed
+    // we need ArgumentCaptor, the role of ArgumentCaptor is
+    // to capture the parameter being passed when certain method is called
+    // in the following scenario, we can see when the add() method is being called
+    // on mockedList, we are verifying that int value 40 is being passed as a parameter
+    @Test
+    public void argumentCapturing() {
+        List<Integer> mockedList = mock(List.class);
+        mockedList.add(40);
+        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
+        // captor.capture() here captures the parameter being passed when add()
+        // method is called
+        verify(mockedList).add(captor.capture());
+        assertEquals((Integer) 40, captor.getValue());
     }
 }
