@@ -13,19 +13,18 @@ import java.util.Arrays;
 
 import io.priyank.dev.unittesting.dao.SimpleDao;
 
+// Run with annotation is mandatory while using mocking features of Mockito
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleServiceMockTest {
 
+    // @InjectMocks ensures that instance of mocked SimpleDao will be injected
+    // to the instance of SimpleService
     @InjectMocks
     private SimpleService simpleService;
 
+    // @Mock annotation helps use to create a mocked instance of SimpleDao
     @Mock
     private SimpleDao mockedDao;
-
-    @Before
-    public void before() {
-        this.simpleService.setSimpleDao(this.mockedDao);
-    }
 
     @Test
     public void calculateSumWithData_basic() {
