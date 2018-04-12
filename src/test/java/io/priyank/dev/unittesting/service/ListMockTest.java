@@ -112,4 +112,33 @@ public class ListMockTest {
         verify(mockedList).add(captor.capture());
         assertEquals((Integer) 40, captor.getValue());
     }
+
+    // Here, we can see the add() method on mockedList is called multiple times
+    // with different parameters, now to ensure that with what parameters it was
+    // called each time?
+    @Test
+    public void multipleArgumentCapturing() {
+        List<Integer> mockedList = mock(List.class);
+        // 1. calling the add() method thrice with parameter
+        mockedList.add(10);
+        mockedList.add(20);
+        mockedList.add(30);
+
+        // 2. creating a captor
+        ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
+
+        // 3. verifying parameter with the help of captor, also we are using times()
+        // to verify that method() add was called exactly thrice
+        verify(mockedList, times(3)).add(captor.capture());
+
+        // 4. getAllValues() method on captor ensure, parameters are captured for each call
+        // to the add() method on mockedList
+        List<Integer> arguments = captor.getAllValues();
+
+        // 5. verify the parameter size, it must be 3
+        assertEquals(3, arguments.size());
+
+        // 6. verify the first argument is 10
+        assertEquals((Integer) 10, arguments.get(0));
+    }
 }
