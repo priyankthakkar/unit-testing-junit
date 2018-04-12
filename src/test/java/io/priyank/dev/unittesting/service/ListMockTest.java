@@ -4,6 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.atMost;
 
 import java.util.List;
 import org.junit.Test;
@@ -57,5 +62,36 @@ public class ListMockTest {
                 .thenReturn(200);
         assertEquals(200, mockedList.get(0));
         assertEquals(200, mockedList.get(500));
+    }
+
+    // This test method will help us to verify
+    // that a certain method was called on Mocked class/interface
+    // here we will call get() method on java.util.List interface
+    // and we will verify it with various scenarios
+    @Test
+    public void mockListVerifyMethod() {
+        List mockedList = mock(List.class);
+        when(mockedList.get(anyInt()))
+                .thenReturn(20);
+
+        assertEquals(20, mockedList.get(0));
+        assertEquals(20, mockedList.get(20));
+
+        // 1. verifies method get() was called with parameter as 0
+        verify(mockedList).get(0);
+
+        // 2. verifies method get() was called with parameter as 0
+        // at least once
+        verify(mockedList, atLeastOnce()).get(0);
+
+        // 3. verifies method get() was called with any int parameters
+        // exactly twice
+        verify(mockedList, times(2)).get(anyInt());
+
+        // 4. verifies method get() was never called with parameter as 30
+        verify(mockedList, never()).get(30);
+
+        // 5. verifies method get() was on list for maximum of two times
+        verify(mockedList, atMost(2)).get(anyInt());
     }
 }
