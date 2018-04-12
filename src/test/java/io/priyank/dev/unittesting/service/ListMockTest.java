@@ -9,8 +9,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.spy;
 
 import java.util.List;
+import java.util.ArrayList;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -140,5 +142,48 @@ public class ListMockTest {
 
         // 6. verify the first argument is 10
         assertEquals((Integer) 10, arguments.get(0));
+    }
+
+    // Mocking and Spying are two different phenomenons
+    // When we mock a class/interface it loses its actual behaviour
+    // if we spy on a class/interface it will retain its behaviour
+    // until we override, below test case demonstrate this capability
+
+    @Test
+    public void spyingArrayList() {
+        // 1. mocked ArrayList
+        ArrayList<String> mockedList = mock(ArrayList.class);
+        // 2. though there is nothing inside list, we can still invoke get() method
+        // which returns null
+        System.out.println(mockedList.get(0));
+        // 3. size() method returns 0 as expected because there are not elements in the ArrayList
+        System.out.println(mockedList.size());
+        // 4. add a element to the list
+        mockedList.add("first");
+        // 5. strangely get() method on the 0th element still returns null (lost behaviour)
+        System.out.println(mockedList.get(0));
+        // 6. size() method also returns size as 0, until and unless override it to return
+        // specific (lost behaviour)
+        System.out.println(mockedList.size());
+
+        // spying
+        // spiedList, an instance of ArrayList with with help of spy()
+        ArrayList<String> spiedList = spy(ArrayList.class);
+        // 1. as spy retains the original behaviour, we cannot invoke get() method directly
+        // it will throw index out bound exception
+        // so let us add an element first
+        spiedList.add("first");
+        // 2. get() method with parameter 0 here returns string value 'first'
+        System.out.println(spiedList.get(0));
+        // 3. size() method here returns the size of the list
+        System.out.println(spiedList.size());
+        // 4. we can also verify similar to mocks
+        verify(spiedList).add("first");
+        // 5. we can also override the actual behaviour, we can see though there is only one element
+        // part of the spiedList, we can still override the behaviour of size() method and force
+        // it to return 5 when called
+        when(spiedList.size())
+                .thenReturn(5);
+        System.out.println(spiedList.size());
     }
 }
